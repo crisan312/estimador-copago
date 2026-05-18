@@ -59,11 +59,17 @@ docker compose up --build
 
 **Acceder en:** `http://localhost:8080`
 
-| Rol | Usuario | Contraseña |
-|-----|---------|------------|
-| Administrador | `admin@copayai.ec` | `CopayAdmin2026!` |
-| DPO | `dpo@copayai.ec` | `CopayAdmin2026!` |
-| Chat anónimo | Sin login | Póliza demo: `12345-EC` |
+Usuarios demo (un usuario por rol) — contraseña común **`CopayAdmin2026!`**:
+
+| Rol | Usuario |
+|-----|---------|
+| ADMIN | `admin@copayai.ec` |
+| DPO | `dpo@copayai.ec` |
+| DOCTOR | `doctor@copayai.ec` |
+| ANALYST | `analista@copayai.ec` |
+| STAFF | `staff@copayai.ec` |
+| PATIENT | `paciente@copayai.ec` |
+| Chat anónimo | Sin login · póliza demo `12345-EC` |
 
 ---
 
