@@ -22,6 +22,8 @@ CopayAI permite a los pacientes ecuatorianos **saber exactamente cuánto pagará
 |--------|-------------|
 | **7 Agentes IA** | Pipeline A1→A2‖A3→A4‖A5→A6 + A7 background |
 | **A8 Validador** | Guardrail determinista (sin LLM): recalcula el copago y corrige alucinaciones de A4 |
+| **A9 Predictor** | Predice el costo del episodio completo (consulta + exámenes + control), no solo la consulta |
+| **Outcome tracking** | Mide la precisión real del estimador (MAPE) — `GET /kpi/accuracy` |
 | **RBAC 6 roles** | PATIENT · STAFF · DOCTOR · ANALYST · ADMIN · DPO |
 | **LOPDP Ecuador** | Cifrado Fernet, SHA-256, audit log inmutable, derechos ARCO |
 | **WhatsApp Twilio** | Recordatorios de cita, notificaciones de copago |
@@ -83,6 +85,7 @@ Browser / WhatsApp
    |  A1-Symptom --> A2-Specialty || A3-Policy       |
    |               --> A4-Copay || A5-Hospital       |
    |               --> A8-Validator (determinista)   |
+   |               --> A9-EpisodePredictor           |
    |               --> A6-Summary                    |
    |  Background:  A7-InsightAnalyst                 |
    |                                                 |

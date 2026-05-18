@@ -181,6 +181,23 @@ event: completed
 data: {"session_id": "uuid", "conversation_id": "uuid", "message_id": "uuid"}
 ```
 
+**Evento `episode_forecast` (A9 — predictor de episodio):**
+
+Tras A8, el agente predictivo **A9-EpisodePredictor** proyecta el costo del
+episodio completo y emite:
+```
+event: episode_forecast
+data: {"agente": "A9-EpisodePredictor", "especialidad": "Cardiología",
+       "ruta_atencion": [
+         {"paso": "Consulta de cardiología", "tipo": "consulta",
+          "probabilidad": 1.0, "copago_paciente_usd": 80.00},
+         {"paso": "Electrocardiograma", "tipo": "examen",
+          "probabilidad": 0.9, "copago_paciente_usd": 35.00}, ...],
+       "escenario_minimo_usd": 115.00, "escenario_probable_usd": 225.00,
+       "escenario_completo_usd": 351.00,
+       "rango_estimado": "$115.00 – $351.00", "confianza": 0.8}
+```
+
 **Evento `validation` (A8 — validador determinista):**
 
 Tras A4, el guardrail no-LLM **A8-CopayValidator** recalcula el copago con
@@ -415,6 +432,27 @@ KPIs agregados del sistema. **Roles:** ANALYST · ADMIN
   "users_by_role": {"PATIENT": 234, "DOCTOR": 18, "STAFF": 7}
 }
 ```
+
+---
+
+### `GET /api/v1/kpi/accuracy`
+
+Precisión del estimador medida con pagos reales (outcome tracking). **Roles:** ADMIN · ANALYST · DOCTOR
+
+**Respuesta 200 (con datos):**
+```json
+{
+  "muestras": 42,
+  "precision_pct": 91.3,
+  "mape_pct": 8.7,
+  "promedio_estimado_usd": 48.30,
+  "promedio_real_usd": 50.10,
+  "por_especialidad": [
+    {"especialidad": "Cardiología", "muestras": 12, "mape_pct": 6.2, "precision_pct": 93.8}
+  ]
+}
+```
+> `mape_pct` = error porcentual absoluto medio · `precision_pct` = 100 − MAPE.
 
 ---
 

@@ -99,6 +99,14 @@ Usuario escribe síntoma
   → si variación > 15 % corrige  │
     el valor de A4 y audita      │
         │                        │
+        ▼                        │
+  A9-EpisodePredictor            │
+  PREDICTIVO · sin LLM           │
+  → proyecta el costo del        │
+    episodio completo (consulta  │
+    + exámenes + control)        │
+  → rango $min – $max            │
+        │                        │
         └────────────┬───────────┘
                      │ asyncio.gather (paralelo)
                      ▼
@@ -141,6 +149,40 @@ la cifra mostrada sea siempre reproducible y auditable (LOPDP Art. 37).
 
 Evento SSE emitido: "validation" → { copago_determinista_usd,
   copago_modelo_usd, variacion_pct, discrepancia, fuente, desglose, notas }
+```
+
+### A9 — Predictor de costo del episodio (agente predictivo, no-LLM)
+
+```
+A9-EpisodePredictor  ·  orchestrator/episode_predictor.py
+  - Predice el costo de bolsillo del EPISODIO COMPLETO, no solo la consulta:
+      consulta → exámenes probables → control
+  - Tabla curada de rutas de atención por especialidad (clinical pathways
+    del mercado Ecuador) — funciona sin datos (cold-start)
+  - Aritmética 100% determinista: reutiliza compute_copay() en cada paso,
+    con el DEDUCIBLE acumulándose paso a paso (cálculo correcto del episodio)
+  - Tres escenarios: mínimo (pasos casi seguros) · probable · completo
+  - Salida al paciente: un RANGO ("$115 – $351"), no un número de falsa
+    precisión
+
+Alcance regulatorio: A9 predice COSTOS y USO DE SERVICIOS, nunca
+desenlaces clínicos. Predecir salud convertiría el sistema en dispositivo
+médico regulado (ARCSA/FDA). A9 se mantiene en el dominio financiero.
+
+Evento SSE emitido: "episode_forecast"
+Persistencia: tabla episode_predictions
+```
+
+### Outcome tracking — precisión medible del estimador
+
+```
+services/forecast_service.py + tabla cost_outcomes
+  - Cada copago REAL pagado (vía webhook/cobro Kushki) se registra y se
+    compara contra lo estimado → variance_pct
+  - GET /api/v1/kpi/accuracy expone MAPE y precisión global y por
+    especialidad (precisión = 100 - MAPE)
+  - Cimiento para recalibrar A4 y A9 con datos reales: el estimador
+    mejora medible con cada caso
 ```
 
 ### Token budget

@@ -21,6 +21,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 - A7-InsightAnalyst — 6 tipos de insights background con caché Redis 1h (temperature=0.2)
 - A8-CopayValidator — guardrail determinista NO-LLM: recalcula el copago con
   aritmética pura, corrige las alucinaciones de A4 y audita las discrepancias
+- A9-EpisodePredictor — agente predictivo NO-LLM: proyecta el costo de bolsillo
+  del episodio completo (consulta + exámenes probables + control) con el
+  deducible acumulado paso a paso; entrega un rango $mín–$máx
+- Outcome tracking — tabla `cost_outcomes` + `services/forecast_service.py`:
+  registra el copago real pagado vs. el estimado y expone la precisión del
+  estimador (MAPE) en `GET /api/v1/kpi/accuracy`
 - CircuitBreaker compartido: 5 fallos → OPEN, recovery 60s
 - TokenBudgetManager: límite 30.000 tokens/conversación con alerta al 80%
 

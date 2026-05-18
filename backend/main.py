@@ -189,6 +189,7 @@ async def health():
             "A1-SymptomInterpreter", "A2-SpecialtySuggester", "A3-PolicyLookup",
             "A4-CopayCalculator", "A5-HospitalRanker", "A6-SummaryWriter",
             "A7-InsightAnalyst", "A8-CopayValidator (determinista, no-LLM)",
+            "A9-EpisodePredictor (predictivo, no-LLM)",
         ],
         "compliance": {
             "lopdp": "compliant",

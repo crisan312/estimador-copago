@@ -6,7 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 
 from auth.dependencies import CurrentUser, get_current_user
-from services import kpi_service
+from services import kpi_service, forecast_service
 
 router = APIRouter(prefix="/api/v1/kpi", tags=["KPI"])
 
@@ -65,3 +65,17 @@ async def get_compliance_kpis(
     if current_user.role not in ("DPO", "ADMIN"):
         raise HTTPException(403, "Acceso restringido a DPO y ADMIN")
     return await kpi_service.get_dpo_kpis()
+
+
+@router.get("/accuracy")
+async def get_estimator_accuracy(
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+):
+    """
+    Precisión del estimador de copago (outcome tracking).
+    Compara los pagos reales registrados contra lo estimado — MAPE y
+    precisión global y por especialidad. Solo ADMIN, ANALYST y DOCTOR.
+    """
+    if current_user.role not in ("ADMIN", "ANALYST", "DOCTOR"):
+        raise HTTPException(403, "Acceso restringido a ADMIN, ANALYST y DOCTOR")
+    return await forecast_service.get_accuracy_stats()

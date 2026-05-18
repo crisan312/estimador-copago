@@ -14,7 +14,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from pydantic import BaseModel, Field
 
 from auth.dependencies import CurrentUser, get_current_user, require_roles
-from services import audit_service
+from services import audit_service, forecast_service
 from db.rls import make_session_hash
 from integrations.fhir import _fhir
 from integrations.iess import _iess
@@ -146,7 +146,11 @@ async def charge_copay(
             "demo": result.demo_mode,
         },
     )
-    return result.data
+
+    # Outcome tracking: registra el pago real vs. el copago estimado de la cita.
+    # Alimenta la métrica de precisión del estimador (GET /api/v1/kpi/accuracy).
+    outcome = await forecast_service.record_outcome(req.appointment_id, req.amount_usd)
+    return {**result.data, "outcome_tracking": outcome}
 
 
 # ── Verificación de identidad ─────────────────────────────────────────────

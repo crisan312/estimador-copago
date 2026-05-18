@@ -16,6 +16,9 @@ from agents.agent_copay import CopayCalculator
 from agents.agent_hospital import HospitalRanker
 from agents.agent_summary import SummaryWriter
 from orchestrator.copay_validator import validate as validate_copay
+from orchestrator.episode_predictor import predict_episode
+from services.forecast_service import save_episode_prediction
+from db.rls import make_session_hash
 
 _a1 = SymptomInterpreter()
 _a2 = SpecialtySuggester()
@@ -175,7 +178,6 @@ async def process_message(
                 r4.data.setdefault("advertencias", []).extend(validation.notas)
                 try:
                     from services import audit_service
-                    from db.rls import make_session_hash
                     await audit_service.log_event(
                         session_hash=make_session_hash(session_id),
                         event_type=audit_service.AuditEvent.AGENT_INVOKED,
@@ -191,6 +193,20 @@ async def process_message(
                     pass
             r4.data["validacion"] = validation.to_dict()
             mem.patient_context["copago"] = r4.data
+
+            # ── A9 — Predicción del costo del episodio completo ───────────
+            yield _event("thinking", {"agent": "A9", "message": "Proyectando el costo del episodio completo..."})
+            episode = predict_episode(
+                mem.patient_context.get("poliza", {}),
+                mem.patient_context.get("especialidad", ""),
+                costo_consulta_real=r4.data.get("costo_consulta_usd"),
+            )
+            r4.data["episodio"] = episode.to_dict()
+            mem.patient_context["episodio"] = episode.to_dict()
+            await save_episode_prediction(
+                make_session_hash(session_id), mem.conversation_id, episode
+            )
+            yield _event("episode_forecast", episode.to_dict())
 
         if r5.success:
             mem.patient_context["hospitales"] = r5.data.get("hospitales", [])
