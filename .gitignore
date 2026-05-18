@@ -23,6 +23,7 @@ node_modules/
 .next/
 out/
 .turbo/
+*.tsbuildinfo
 
 # Bases de datos
 *.db
