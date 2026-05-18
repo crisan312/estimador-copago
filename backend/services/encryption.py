@@ -10,9 +10,12 @@ from config import settings
 _fernet = Fernet(settings.fernet_key.encode())
 
 
-def encrypt(data: dict | str) -> bytes:
-    if isinstance(data, dict):
-        data = json.dumps(data, ensure_ascii=False)
+def encrypt(data: dict | list | str) -> bytes:
+    # Cualquier estructura JSON-serializable (dict, list, ...) se serializa;
+    # las cadenas se cifran tal cual. Antes solo manejaba dict → list.encode()
+    # lanzaba AttributeError y rompía la persistencia de conversaciones.
+    if not isinstance(data, str):
+        data = json.dumps(data, ensure_ascii=False, default=str)
     return _fernet.encrypt(data.encode("utf-8"))
 
 

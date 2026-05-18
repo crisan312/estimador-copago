@@ -6,7 +6,11 @@ import HospitalList from "../../components/HospitalList";
 export const metadata: Metadata = { title: "CopayAI — Resumen de consulta" };
 
 async function fetchSummary(id: string) {
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  // Componente server: usa la URL interna de Docker (api:8000), nunca localhost
+  const base =
+    process.env.INTERNAL_API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8000";
   try {
     const res = await fetch(`${base}/api/v1/conversation/${id}/summary`, { cache: "no-store" });
     if (!res.ok) return null;
