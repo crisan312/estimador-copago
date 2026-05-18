@@ -1,8 +1,19 @@
 import { Metadata } from "next";
 import TopBar from "../components/TopBar";
-import { BookOpen, DollarSign, Hospital, HelpCircle } from "lucide-react";
+import { BookOpen, Hospital, HelpCircle, Users } from "lucide-react";
 
 export const metadata: Metadata = { title: "CopayAI — Ayuda" };
+
+// Usuarios demo para evaluación del jurado — contraseña común: CopayAdmin2026!
+const DEMO_ACCESS = [
+  { rol: "ADMIN",   user: "admin@copayai.ec",    ve: "Todo: usuarios, audit log, KPIs del sistema" },
+  { rol: "DPO",     user: "dpo@copayai.ec",      ve: "Cumplimiento LOPDP, consentimientos, solicitudes ARCO" },
+  { rol: "DOCTOR",  user: "doctor@copayai.ec",   ve: "Sus pacientes, citas, KPIs de Cardiología" },
+  { rol: "ANALYST", user: "analista@copayai.ec", ve: "KPIs del sistema, recomendaciones IA, precisión del estimador" },
+  { rol: "STAFF",   user: "staff@copayai.ec",    ve: "Gestión de citas y confirmaciones" },
+  { rol: "PATIENT", user: "paciente@copayai.ec", ve: "Sus citas, copagos, «mis datos» (ARCO)" },
+  { rol: "Anónimo", user: "sin login",           ve: "Chat del estimador · póliza demo 12345-EC" },
+];
 
 const GLOSSARY = [
   { term: "Copago",     def: "La parte de la consulta que pagas tú. Si el seguro cubre el 80%, tu copago es el 20% restante." },
@@ -23,6 +34,39 @@ export default function HelpPage() {
           <h1 className="text-3xl font-bold text-gray-900">Centro de ayuda</h1>
           <p className="mt-2 text-gray-500">Todo lo que necesitas saber para usar CopayAI y entender tu seguro médico.</p>
         </header>
+
+        {/* Acceso para el jurado */}
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-5 w-5 text-brand-600" />
+            <h2 className="text-lg font-semibold text-gray-900">Acceso para el jurado</h2>
+          </div>
+          <p className="text-sm text-gray-600 mb-3">
+            Usuarios demo para evaluar la plataforma. Contraseña única para todos:{" "}
+            <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">CopayAdmin2026!</code>.
+            En la pantalla de inicio de sesión también hay botones de acceso rápido (un clic por rol).
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50 text-left text-xs uppercase text-gray-500">
+                  <th className="px-4 py-2.5 font-semibold">Rol</th>
+                  <th className="px-4 py-2.5 font-semibold">Usuario</th>
+                  <th className="px-4 py-2.5 font-semibold">Qué puede ver</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {DEMO_ACCESS.map((u) => (
+                  <tr key={u.rol}>
+                    <td className="px-4 py-3 font-semibold text-brand-700">{u.rol}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-gray-700">{u.user}</td>
+                    <td className="px-4 py-3 text-gray-600">{u.ve}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
         {/* Glosario */}
         <section>

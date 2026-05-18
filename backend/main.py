@@ -62,14 +62,23 @@ app.add_middleware(ConsentMiddleware)
 app.add_middleware(RateLimiterMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestLoggerMiddleware)
+# CORS — allowlist ESTRICTA: solo los orígenes propios de la aplicación
+# (definidos en CORS_ORIGINS del .env). Nunca se usa wildcard "*"; con
+# allow_credentials=True el wildcard es inválido por especificación.
+# Cualquier origen fuera de la lista recibe respuesta sin cabeceras CORS
+# y el navegador bloquea la petición.
+_cors_origins = [o for o in settings.cors_origins_list if o]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origins=_cors_origins,
+    allow_origin_regex=None,                 # sin comodines de origen
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-Session-Id", "Authorization"],
     expose_headers=["X-Session-Id"],
+    max_age=600,
 )
+logger.info("CORS allowlist: %s", _cors_origins)
 
 # ── Routers ────────────────────────────────────────────────────────────────
 app.include_router(auth.router)

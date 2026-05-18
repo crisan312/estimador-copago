@@ -83,6 +83,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
 #### Seguridad
 
+- Row-Level Security (RLS) PostgreSQL — migración `005_rls.sql`: RLS
+  habilitada y forzada en 10 tablas de datos personales, con políticas de
+  aislamiento por `session_hash` / `user_id` (GUC de sesión)
+- CORS endurecido — allowlist estricta de orígenes, sin wildcard, `max_age`
+- Security headers OWASP añadidos al bloque nginx de desarrollo (`:8080`)
+  además del bloque `:443` y del `SecurityHeadersMiddleware` de FastAPI
 - OWASP Top 10 mitigaciones documentadas
 - Queries parametrizadas asyncpg (prevención SQL injection)
 - Rate limiting: 20 req/min general, 6 req/min chat, 30 req/hora por conversación
