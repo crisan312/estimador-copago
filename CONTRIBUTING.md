@@ -23,7 +23,7 @@ Este proyecto sigue el principio de respeto mutuo y colaboración constructiva. 
 
 ```bash
 # 1. Fork y clonar
-git clone https://github.com/TU-USUARIO/estimador-copago.git
+git clone https://github.com/crisan312/estimador-copago.git
 cd estimador-copago
 
 # 2. Crear rama de trabajo

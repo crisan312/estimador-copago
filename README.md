@@ -46,7 +46,7 @@ CopayAI permite a los pacientes ecuatorianos **saber exactamente cuánto pagará
 
 ```bash
 # 1. Clonar y entrar al proyecto
-git clone https://github.com/tu-org/estimador-copago.git
+git clone https://github.com/crisan312/estimador-copago.git
 cd estimador-copago
 
 # 2. Configurar variables de entorno

@@ -32,7 +32,7 @@
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/tu-org/estimador-copago.git
+git clone https://github.com/crisan312/estimador-copago.git
 cd estimador-copago
 
 # 2. Copiar y configurar variables de entorno
@@ -210,7 +210,7 @@ nginx:
 
 ```bash
 # Clonar y configurar
-git clone https://github.com/tu-org/estimador-copago.git /opt/copayai
+git clone https://github.com/crisan312/estimador-copago.git /opt/copayai
 cd /opt/copayai
 cp .env.example .env.production
 nano .env.production  # Configurar todas las variables
@@ -420,7 +420,7 @@ echo "Backup completado: $BACKUP_DIR"
 
 ```bash
 # 1. Clonar repositorio en nuevo servidor
-git clone https://github.com/tu-org/estimador-copago.git /opt/copayai
+git clone https://github.com/crisan312/estimador-copago.git /opt/copayai
 
 # 2. Restaurar .env
 gpg --decrypt backup/env_20260517.env.gpg > /opt/copayai/.env
