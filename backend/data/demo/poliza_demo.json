@@ -1,0 +1,19 @@
+{
+  "numero_poliza": "12345-EC",
+  "plan_nombre": "Plan Vida Plus",
+  "aseguradora": "BMI Ecuador",
+  "titular": "Paciente Demo",
+  "deducible_anual": 500.00,
+  "deducible_consumido": 150.00,
+  "copago_pct": 20.0,
+  "coaseguro_pct": 0.0,
+  "cobertura_consulta_externa": true,
+  "cobertura_especialistas": true,
+  "cobertura_emergencias": true,
+  "tope_anual_usd": 50000.00,
+  "tope_consumido_usd": 1200.00,
+  "red_hospitales_autorizados": ["h001","h002","h003","h005","h007","h008","h010","h011"],
+  "vigencia_desde": "2026-01-01",
+  "vigencia_hasta": "2026-12-31",
+  "fuente": "demo"
+}
