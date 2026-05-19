@@ -1,0 +1,69 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# render.yaml — Blueprint de despliegue de CopayAI en Render
+#
+# Deploy: dashboard.render.com → New → Blueprint → conectar este repositorio.
+# Render lee este archivo y crea: base de datos PostgreSQL, Redis, backend
+# (FastAPI) y frontend (Next.js). Guía paso a paso en docs/DEPLOY_RENDER.md
+# ═══════════════════════════════════════════════════════════════════════════
+
+databases:
+  - name: copayai-db
+    databaseName: copago
+    user: copago_user
+    plan: free
+
+services:
+  # ── Redis — caché, sesiones SSE, rate limiting ──────────────────────────
+  - type: redis
+    name: copayai-redis
+    plan: free
+    ipAllowList: []          # solo accesible desde la red interna de Render
+
+  # ── Backend — FastAPI · 9 agentes · pipeline SSE ────────────────────────
+  - type: web
+    name: copayai-api
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: copayai-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: copayai-redis
+          type: redis
+          property: connectionString
+      # ── Secretos — se introducen en el panel de Render (no se versionan) ─
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: FERNET_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      # ── URL del frontend — se rellena tras el 1er deploy (ver guía) ──────
+      - key: CORS_ORIGINS
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+
+  # ── Frontend — Next.js 14 ───────────────────────────────────────────────
+  - type: web
+    name: copayai-web
+    runtime: docker
+    dockerfilePath: frontend/Dockerfile
+    dockerContext: frontend
+    plan: free
+    envVars:
+      # URL del backend — se rellena tras el 1er deploy (ver guía).
+      # NEXT_PUBLIC_API_URL se hornea en el build → el navegador llama
+      # directo al api (SSE fiable). INTERNAL_API_URL la usa el SSR.
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: INTERNAL_API_URL
+        sync: false
