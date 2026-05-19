@@ -4,6 +4,10 @@
 -- (mismo hash bcrypt validado que admin/dpo en la migración 002)
 -- ═══════════════════════════════════════════════════════════════════════════
 
+-- Garantiza que RLS no fuerza al rol de la app antes del INSERT de abajo
+-- (en PostgreSQL gestionado el rol no es superusuario). Idempotente.
+ALTER TABLE user_profiles NO FORCE ROW LEVEL SECURITY;
+
 INSERT INTO users (email, password_hash, role, is_active) VALUES
   ('paciente@copayai.ec', '$2b$12$prDH.Jm9Oif4xRu3PeECduSyIIFYQI8AGVZq.l5C.zQqe4wsmDQa2', 'PATIENT',  TRUE),
   ('staff@copayai.ec',    '$2b$12$prDH.Jm9Oif4xRu3PeECduSyIIFYQI8AGVZq.l5C.zQqe4wsmDQa2', 'STAFF',    TRUE),

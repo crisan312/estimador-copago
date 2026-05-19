@@ -27,5 +27,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
-ENV PORT 3000
+# HOSTNAME=0.0.0.0 → el server standalone de Next.js escucha en todas las
+# interfaces (necesario en Render). PORT no se fija: lo inyecta Render; en
+# docker-compose, Next.js usa 3000 por defecto.
+ENV HOSTNAME=0.0.0.0
 CMD ["node", "server.js"]
